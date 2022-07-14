@@ -1,11 +1,13 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const router = require("./routers/bookRoutes");
+const cors = require('cors');
 
 const app = express();
 
 //middleware
 app.use(express.json());
+app.use(cors());
 app.use("/books",router) //localhost:5000/books
 
 mongoose.connect(
