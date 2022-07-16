@@ -1,8 +1,21 @@
 import React, { useState } from 'react'
 import { FormLabel,TextField,Box, Button, Checkbox,FormControlLabel} from '@mui/material';
-
+import axios from 'axios';
+import {useNavigate} from 'react-router-dom';
 
 function AddBook() {
+  
+  const history = useNavigate();
+  const sendRequest = async()=>{
+    await axios.post("http://localhost:8070/books",{
+      name: String(inputs.name),
+      author:String(inputs.author),
+      description:String(inputs.description),
+      price:Number(inputs.price),
+      image:String(inputs.image),
+      available:Boolean(checked)
+    }).then(res=>res.data);
+}
 
   const [inputs,setinputs] = useState({
     name:'',
@@ -12,7 +25,8 @@ function AddBook() {
     available:'false',
     image:''
 });
-
+  
+const [checked,setChecked] = useState(false);
   const handleChange = (e)=>{
     setinputs((prevState)=>({
       ...prevState,
@@ -20,9 +34,17 @@ function AddBook() {
     }))
   }
 
+  const handleSubmit =(e)=>{
+    e.preventDefault();
+    console.log(inputs,checked);
+    sendRequest().then(()=>history('/books'))
+  }
+
+  
+
   return (
  
-    <form>
+    <form onSubmit={handleSubmit}>
         <center><h1>Add Books Details</h1></center>  
       <Box display="flex" 
       flexDirection="column" 
@@ -75,7 +97,7 @@ function AddBook() {
       name="image"/>
       
       <FormControlLabel
-      control={<Checkbox checked={inputs.available}/>} 
+      control={<Checkbox checked={checked} onChange={()=>setChecked(!checked)}/>} 
       label="Availability"/>
 
       <Button variant='contained' type='submit'>AddBook</Button>
